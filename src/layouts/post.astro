@@ -13,8 +13,8 @@ const { content } = Astro.props
     </head>
     <MainLayout>
         <div class="py-4 mb-1">
-            <div class="inline-flex gap-2 py-4"> <p class="text-theme-primary dark:text-theme-dark-primary">Tags:</p>
-                { content.tags.length > 0 && content.tags.map(tag => <a class="px-4 py-0 rounded-full text-theme-primary bg-theme-dark-primary dark:bg-theme-primary dark:text-theme-dark-primary hover:bg-theme-primary hover:text-theme-dark-primary dark:hover:bg-theme-dark-primary dark:hover:text-theme-primary" href={`/tags/${tag}`} title={tag}>{tag}</a>) }
+            <div> <p class="text-theme-primary dark:text-theme-dark-primary">Tags:</p>
+                { content.tags.length > 0 && content.tags.map(tag => <div class="inline-flex gap-2 my-1 mx-1 py-1 px-2 rounded-full text-theme-primary bg-theme-dark-primary dark:bg-theme-primary dark:text-theme-dark-primary hover:bg-theme-primary hover:text-theme-dark-primary dark:hover:bg-theme-dark-primary dark:hover:text-theme-primary"><a href={`/tags/${tag}`} title={tag}>{tag}</a></div>) }
             </div>
             <h1 class="text-5xl font-extrabold text-theme-primary dark:text-theme-dark-primary">{ content.title }</h1>
             <h5 class="text-gray-500 dark:text-gray-100">
