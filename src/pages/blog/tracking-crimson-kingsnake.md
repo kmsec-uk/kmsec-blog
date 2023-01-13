@@ -95,7 +95,7 @@ They had a flurry of activity in Autumn 2022, and since roughly December 2022, t
 
 In summary, they appear to be a reasonably-resourced group, but aren't particularly covert in their operations.
 ## VirusTotal LiveHunt Yara
-```yara
+```
 import "vt"
 rule CrimsonKingsnake
 {  
