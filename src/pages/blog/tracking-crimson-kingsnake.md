@@ -26,7 +26,7 @@ The initial lure comes comes from what I presume to be a compromised Office365 e
 
 The English is good, the context is believable, and it was targeted to a well-positioned employee in finance.
 
-The story gets interesting with the second email. The fraudster spins up a fake thread to the CEO mail@work-desk02[.]space with the victim CC'd:
+The story gets interesting with the second email. The fraudster spins up a fake thread to the CEO mail@work-desk02[.]space with the victim CC'd. Note that they pivot from using the compromised Office365 infrastructure to their own infrastructure for sending emails:
 
 ![follow-up-1-ceo.png](/images/uploads/crimsonkingsnake/follow-up-1-ceo.png)
 
