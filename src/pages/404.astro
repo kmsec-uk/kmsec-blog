@@ -1,0 +1,8 @@
+---
+import DefaultPageLayout from '$/layouts/default.astro'
+const title = '404 - not found'
+const description = 'Gah!'
+---
+<DefaultPageLayout content={{ title, description }} showPageHeader={true}>
+    <script>console.log("This is not the page you were looking for")</script>
+</DefaultPageLayout>

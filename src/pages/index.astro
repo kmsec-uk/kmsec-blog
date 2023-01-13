@@ -1,0 +1,16 @@
+---
+import DefaultPageLayout from '$/layouts/default.astro'
+import PostPreviewList from '$/components/PostPreviewList.astro'
+
+
+const title = 'Home'
+const description = 'kmsec - a security blog'
+
+const posts = await Astro.glob('./blog/*{.md,.mdx}')
+---
+<DefaultPageLayout content={{ title, description }} showPageHeader={false}>
+    <PostPreviewList posts={posts} />
+    <div class="flex justify-center md:justify-end py-6">
+        <a class="text-base uppercase  hover:underline text-gray-700 dark:text-gray-300" href="/blog" title="All Posts">All Posts &rarr;</a>
+    </div>
+</DefaultPageLayout>

@@ -1,0 +1,17 @@
+---
+title: 'About'
+description: 'A mediocre human'
+---
+import DefaultPageLayout from '$/layouts/default.astro'
+import Prose from '$/components/Prose.astro'
+
+<DefaultPageLayout content={{ title: frontmatter.title, description: frontmatter.description }}>
+    <Prose>
+            I am a UK-based cyber security enthusiast.<br/>
+            This website is my attempt at sharing with a community that gave me so much.<br/>
+            I hope you enjoy my content.
+             
+             \- Kieran M
+                <img width="150" src="/assets/emoji_u1f9a5.svg" title="Kieran Sloth" />
+    </Prose>
+</DefaultPageLayout>

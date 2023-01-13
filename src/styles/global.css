@@ -1,0 +1,20 @@
+@tailwind base;
+/* note to self: making changes here requires restarting dev server.*/
+/* blog image hover cursor applied here as it doesn't work in config.cjs */
+@layer base {
+	header, footer {
+		@apply 
+		text-slate-600
+		border-slate-500 
+		dark:text-slate-400 
+		dark:border-slate-400;
+	}
+	.content img {
+		@apply
+		hover:cursor-zoom-in
+		mx-auto
+		bg-gray-300;
+	}
+}
+@tailwind components;
+@tailwind utilities;

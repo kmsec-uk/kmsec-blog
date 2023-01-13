@@ -1,0 +1,10 @@
+---
+import PostPreview from './PostPreview.astro'
+const { posts } = Astro.props
+const sortedPosts = posts.sort((a, b) => new Date(b.frontmatter.date) - new Date(a.frontmatter.date));
+---
+<section class="flex flex-col gap-12">
+    {sortedPosts.map((post) => (
+        <PostPreview post={post}/>
+    ))}
+</section>
