@@ -1,4 +1,5 @@
 User-agent: *
 Allow: /
 Sitemap: https://kmsec.uk/sitemap-0.xml
-Disalow: /*.json$
+Disallow: /*.json$
+Disallow: /*.gz$
