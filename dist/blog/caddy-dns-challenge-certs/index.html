@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>kmsec | Caddy: enabling valid internal SSL certificates with ACME DNS challenge</title>
+    <meta name="title" content="kmsec | Caddy: enabling valid internal SSL certificates with ACME DNS challenge">
+    <meta name="description" content="This is an older how-to I wrote on how I provisioned valid SSL certificates on my internal homelab using ACME DNS challenge">
+
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="shortcut icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+    <link rel="stylesheet" href="/prism.css">
+
+    <meta httpEquiv="X-UA-Compatible" content="IE=edge">
+    <meta name="msapplication-TileColor" content="#da532c">
+    <meta name="msapplication-config" content="/browserconfig.xml">
+    <meta name="theme-color" content="#ffffff">
+
+    <!-- Open Graph Tags (Facebook) -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="kmsec | Caddy: enabling valid internal SSL certificates with ACME DNS challenge">
+    
+    <meta property="og:description" content="This is an older how-to I wrote on how I provisioned valid SSL certificates on my internal homelab using ACME DNS challenge">
+    
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:title" content="kmsec | Caddy: enabling valid internal SSL certificates with ACME DNS challenge">
+    
+    <meta property="twitter:description" content="This is an older how-to I wrote on how I provisioned valid SSL certificates on my internal homelab using ACME DNS challenge">
+    
+    <link rel="stylesheet" href="/assets/404.c365a0ee.css" /></head>
+    <body class="font-fira antialiased min-h-screen bg-slate-100 dark:bg-slate-900 line-numbers">
+    <div class="transition-colors">
+        <main class="mx-auto m-0 max-w-4xl px-4">
+            <style>astro-island,astro-slot{display:contents}</style><script>(self.Astro=self.Astro||{}).visible=(s,c,n)=>{const r=async()=>{await(await s())()};let i=new IntersectionObserver(e=>{for(const t of e)if(!!t.isIntersecting){i.disconnect(),r();break}});for(let e=0;e<n.children.length;e++){const t=n.children[e];i.observe(t)}},window.dispatchEvent(new Event("astro:visible"));var l;{const c={0:t=>t,1:t=>JSON.parse(t,o),2:t=>new RegExp(t),3:t=>new Date(t),4:t=>new Map(JSON.parse(t,o)),5:t=>new Set(JSON.parse(t,o)),6:t=>BigInt(t),7:t=>new URL(t),8:t=>new Uint8Array(JSON.parse(t)),9:t=>new Uint16Array(JSON.parse(t)),10:t=>new Uint32Array(JSON.parse(t))},o=(t,s)=>{if(t===""||!Array.isArray(s))return s;const[e,n]=s;return e in c?c[e](n):void 0};customElements.get("astro-island")||customElements.define("astro-island",(l=class extends HTMLElement{constructor(){super(...arguments);this.hydrate=()=>{if(!this.hydrator||this.parentElement&&this.parentElement.closest("astro-island[ssr]"))return;const s=this.querySelectorAll("astro-slot"),e={},n=this.querySelectorAll("template[data-astro-template]");for(const r of n){const i=r.closest(this.tagName);!i||!i.isSameNode(this)||(e[r.getAttribute("data-astro-template")||"default"]=r.innerHTML,r.remove())}for(const r of s){const i=r.closest(this.tagName);!i||!i.isSameNode(this)||(e[r.getAttribute("name")||"default"]=r.innerHTML)}const a=this.hasAttribute("props")?JSON.parse(this.getAttribute("props"),o):{};this.hydrator(this)(this.Component,a,e,{client:this.getAttribute("client")}),this.removeAttribute("ssr"),window.removeEventListener("astro:hydrate",this.hydrate),window.dispatchEvent(new CustomEvent("astro:hydrate"))}}connectedCallback(){!this.hasAttribute("await-children")||this.firstChild?this.childrenConnectedCallback():new MutationObserver((s,e)=>{e.disconnect(),this.childrenConnectedCallback()}).observe(this,{childList:!0})}async childrenConnectedCallback(){window.addEventListener("astro:hydrate",this.hydrate);let s=this.getAttribute("before-hydration-url");s&&await import(s),this.start()}start(){const s=JSON.parse(this.getAttribute("opts")),e=this.getAttribute("client");if(Astro[e]===void 0){window.addEventListener(`astro:${e}`,()=>this.start(),{once:!0});return}Astro[e](async()=>{const n=this.getAttribute("renderer-url"),[a,{default:r}]=await Promise.all([import(this.getAttribute("component-url")),n?import(n):()=>()=>{}]),i=this.getAttribute("component-export")||"default";if(!i.includes("."))this.Component=a[i];else{this.Component=a;for(const d of i.split("."))this.Component=this.Component[d]}return this.hydrator=r,this.hydrate},s,this)}attributeChangedCallback(){this.hydrator&&this.hydrate()}},l.observedAttributes=["props"],l))}</script><script>(self.Astro=self.Astro||{}).load=a=>{(async()=>await(await a())())()},window.dispatchEvent(new Event("astro:load"));</script><br class="my-4"><header class="flex gap-4 border-b py-3 bg-[url('/assets/hexagons.svg')] bg-contain bg-center bg-clip-border">
+    <div class="header__meta flex-1">
+        <div class="object-contain  w-900">
+            <svg viewBox="0 0 10 1.2">
+                <a href="https://kmsec.uk"><text class="tracking-widest font-title stroke-violet-700 dark:stroke-violet-300 font-black" x="0" y="1" text-anchor="center" font-size="1" fill="none" stroke-width="0.05">KMsec</text></a>  
+              </svg>          
+        </div>
+        <div class="header__meta-more flex">
+            <p class="text-xl flex-1 dark:text-gray-200">
+                kmsec: (mainly) a security blog
+            </p>
+            <nav class="header__nav flex">
+                <ul class="flex gap-3 text-gray-400">
+                    <li>
+                        <astro-island uid="ilSPA" component-url="/SearchBtn.37742e01.js" component-export="default" renderer-url="/client.788af3ea.js" props="{}" ssr="" client="visible" opts="{&quot;name&quot;:&quot;SearchBtn&quot;,&quot;value&quot;:true}" await-children=""><button><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path fill-rule="evenodd" clip-rule="evenodd" d="M16.2071 4.89344C19.0923 7.77862 19.3131 12.3193 16.8693 15.4578C16.8846 15.4713 16.8996 15.4854 16.9143 15.5L21.1569 19.7427C21.5474 20.1332 21.5474 20.7664 21.1569 21.1569C20.7664 21.5474 20.1332 21.5474 19.7427 21.1569L15.5 16.9143C15.4854 16.8996 15.4713 16.8846 15.4578 16.8693C12.3193 19.3131 7.77862 19.0923 4.89344 16.2071C1.76924 13.083 1.76924 8.01763 4.89344 4.89344C8.01763 1.76924 13.083 1.76924 16.2071 4.89344ZM14.7929 14.7929C17.1361 12.4498 17.1361 8.6508 14.7929 6.30765C12.4498 3.96451 8.6508 3.96451 6.30765 6.30765C3.96451 8.6508 3.96451 12.4498 6.30765 14.7929C8.6508 17.1361 12.4498 17.1361 14.7929 14.7929Z" fill="currentColor"></path></svg></button></astro-island>
+                    </li>
+                    <li>
+                        <a href="https://github.com/kmsec-uk" title="kmsec's Github">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+</svg>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/rss.xml" title="RSS">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle>
+</svg>
+                        </a>
+                    </li>
+                    <li>
+                        <astro-island uid="10ftPC" component-url="/ModeSwitcherBtn.093795cc.js" component-export="default" renderer-url="/client.788af3ea.js" props="{}" ssr="" client="visible" opts="{&quot;name&quot;:&quot;ModeSwitcherBtn&quot;,&quot;value&quot;:true}" await-children=""><button><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg></button></astro-island>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</header><nav class="nav py-3">
+    <ul class="inline-flex list-none gap-10 text-xl font-semibold text-theme-secondary dark:text-theme-dark-secondary py-2 flex-wrap">
+         <li>
+                <a class="hover:underline" href="/" title="home">Home</a>
+            </li><li>
+                <a class="hover:underline" href="/blog" title="blog">Blog</a>
+            </li><li>
+                <a class="hover:underline" href="/tags" title="tags">Tags</a>
+            </li><li>
+                <a class="hover:underline" href="/tools" title="tools">Tools</a>
+            </li><li>
+                <a class="hover:underline" href="/about" title="about">About</a>
+            </li>
+    </ul>
+</nav><div class="content">
+        <div class="py-4 mb-1">
+            <div> <p class="text-theme-primary dark:text-theme-dark-primary">Tags:</p>
+                <div class="inline-flex gap-2 my-1 mx-1 py-1 px-2 rounded-full text-theme-primary bg-theme-dark-primary dark:bg-theme-primary dark:text-theme-dark-primary hover:bg-theme-primary hover:text-theme-dark-primary dark:hover:bg-theme-dark-primary dark:hover:text-theme-primary"><a href="/tags/caddy" title="caddy">caddy</a></div><div class="inline-flex gap-2 my-1 mx-1 py-1 px-2 rounded-full text-theme-primary bg-theme-dark-primary dark:bg-theme-primary dark:text-theme-dark-primary hover:bg-theme-primary hover:text-theme-dark-primary dark:hover:bg-theme-dark-primary dark:hover:text-theme-primary"><a href="/tags/letsencrypt" title="letsencrypt">letsencrypt</a></div><div class="inline-flex gap-2 my-1 mx-1 py-1 px-2 rounded-full text-theme-primary bg-theme-dark-primary dark:bg-theme-primary dark:text-theme-dark-primary hover:bg-theme-primary hover:text-theme-dark-primary dark:hover:bg-theme-dark-primary dark:hover:text-theme-primary"><a href="/tags/lab" title="lab">lab</a></div>
+            </div>
+            <h1 class="text-5xl font-extrabold text-theme-primary dark:text-theme-dark-primary">Caddy: enabling valid internal SSL certificates with ACME DNS challenge</h1>
+            <h5 class="text-gray-500 dark:text-gray-100">
+                <p class="text-gray-500 dark:text-gray-100">kmsec</p> |
+                <span class="text-gray-400">Friday, August 6, 2021</span>
+            </h5>
+        </div><article class="prose prose-xl max-w-none sm:px-0 md:px-9 dark:prose-dark">
+    <p>Note from 2023: This is an older how-to I’ve migrated from an old blog on how I provisioned valid SSL certificates on my internal homelab using ACME DNS challenge so that I didn’t have to open ports up to the internet for the usual HTTP challenge.</p>
+<p>It may be useful for those that haven’t got valid TLS/SSL/X509 certificates in the homelab yet. Some steps might be outdated.</p>
+<hr>
+<p>The outcome of this write-up is to have all Docker-hosted services behind Caddy, using valid SSL certificates, <em>without</em> exposing any service to the internet.</p>
+<h2 id="contents">Contents</h2>
+<ul>
+<li>Pre-requisites</li>
+<li>DNS ACME challenge</li>
+<li>Managing your domain name with DigitalOcean and getting the API key</li>
+<li>Creating a wildcard DNS entry in dnsmasq</li>
+<li>Building Caddy with the DNS provider bundle</li>
+<li>Creating the Caddy docker-compose file</li>
+<li>Testing</li>
+<li>Adding real services</li>
+<li>Reloading Caddy and general administration</li>
+<li>Conclusion</li>
+</ul>
+<h2 id="pre-requisites">Pre-requisites</h2>
+<ul>
+<li>A purchased domain name.</li>
+<li>A DigitalOcean account (or any other DNS provider which Caddy supports for DNS ACME challenge). If you don’t have one already, please use my <a href="https://m.do.co/c/6f6dff4cca70">referral link</a> to sign up to Digital Ocean.
+<ul>
+<li>💁‍♂️ <a href="https://caddy.community/t/how-to-use-dns-provider-modules-in-caddy-2/8148">Read more about the DNS ACME modules available Caddy</a></li>
+<li>🧾 <a href="https://github.com/caddy-dns">Check which DNS providers are supported in Caddy</a></li>
+</ul>
+</li>
+<li>(Optional) dnsmasq server (or a PiHole server, which uses dnsmasq too)</li>
+<li>A Docker host with services ready to secure behind Caddy</li>
+</ul>
+<h2 id="dns-acme-challenge">DNS ACME challenge</h2>
+<p>Caddy uses public ACME CAs such as Let’s Encrypt or ZeroSSL to issue valid SSL certificates (as per their <a href="https://caddyserver.com/docs/automatic-https#overview">documentation</a>).</p>
+<p>With <a href="https://en.wikipedia.org/wiki/Automated_Certificate_Management_Environment">ACME</a> (Automated Certificate Management Environment), there are several different ways a valid SSL certificate can be issued. When setting up a public-facing website this is fairly trivial as you can simply use the already-exposed port 80 to complete the HTTP challenge (or 443 for TLS-ALPN challenge) and get a certificate that way.</p>
+<p>Since my services are never intended to be exposed externally (like you, if you’re reading this!), I opted for the DNS challenge. The only “exposed” service is my public DNS nameserver (DigitalOcean).</p>
+<p>It’s possible to <a href="https://www.digitalocean.com/community/tutorials/how-to-acquire-a-let-s-encrypt-certificate-using-dns-validation-with-acme-dns-certbot-on-ubuntu-18-04">complete the DNS ACME challenge manually</a>, but Caddy does all the work for you and renews certificates when they expire. Once Caddy is setup, certificates require little-to-no effort to maintain.</p>
+<p>A picture tells a thousand words:</p>
+<p><img src="/images/uploads/caddy/caddy-dns-challenge.png" alt="caddy-dns-challenge.png"></p>
+<h2 id="managing-your-domain-name-with-digitalocean-and-getting-the-api-key">Managing your domain name with DigitalOcean and getting the API key</h2>
+<p>In order to complete the ACME DNS challenge, you need to give Caddy API access to your DNS provider.</p>
+<p>I’ve used DigitalOcean for a VPS for quite some time, so using DigitalOcean to manage my DNS instead of any other <a href="https://github.com/caddy-dns">Caddy-supported provider</a> was a matter of convenience. I’ve included steps here on how to manage your domain with DigitalOcean.</p>
+<h3 id="1-set-your-nameserver-to-digitaloceans">1. Set your nameserver to DigitalOcean’s</h3>
+<p>From your DNS provider’s management console, set your nameservers to DigitalOcean’s:</p>
+<p><img src="/images/uploads/caddy/changenameservers.png" alt="changenameservers.png"></p>
+<h3 id="2-add-the-domain-in-digitalocean">2. Add the Domain in DigitalOcean</h3>
+<p>On the Networking tab, add your domain</p>
+<p><img src="/images/uploads/caddy/adddomaindigitalocean.png" alt="adddomaindigitalocean.png"></p>
+<h3 id="3-generate-the-api-key">3. Generate the API key</h3>
+<p>Generate the API key from the API tab in DigitalOcean. Save it for later.</p>
+<p><img src="/images/uploads/caddy/createapikey.png" alt="createapikey.png"></p>
+<h2 id="creating-a-wildcard-dns-entry-in-your-local-dns-server">Creating a wildcard DNS entry in your local DNS server</h2>
+<p>I want each service to have its own subdomain. e.g.:</p>
+<ul>
+<li><code>transmission.example.com</code></li>
+<li><code>portainer.example.com</code></li>
+<li><code>wiki-js.example.com</code></li>
+</ul>
+<p>If you want to follow this example, you’ll either need to create individual A records/hosts entries for each subdomain, or you can create a wildcard DNS entry in dnsmasq and leave all headaches behind.</p>
+<p>On my local PiHole, I just added a dnsmasq config file in <code>/etc/dnsmasq.d/</code> for my wildcard domain to point to my Docker host. The syntax is <code>address=/.domain.tld/10.10.1.250</code>. My example below shows my personal config. Each service is underneath the <code>lab.example.com</code> domain. e.g. <code>transmission.lab.example.com</code>.</p>
+<pre class="language-bash"><code is:raw="" class="language-bash">$ <span class="token function">cat</span> /etc/dnsmasq.d/99-dockerhost2.conf
+<span class="token assign-left variable">address</span><span class="token operator">=</span>/.lab.example.com/192.168.1.197</code></pre>
+<h2 id="building-caddy-with-the-dns-provider-bundle">Building Caddy with the DNS provider bundle</h2>
+<p>I should preface that I opted to use Caddy in Docker. It comes as an <a href="https://hub.docker.com/_/caddy">official image</a>. It’s usually plug-and-play, but since the DNS ACME bundles are not included by default, we need to build our own container image that we can then use for starting Caddy proper. Read the <a href="https://hub.docker.com/_/caddy">Docker Hub page</a> from the section <em>Adding custom Caddy modules</em> for more information on what this means.</p>
+<p>The following Dockerfile is a carbon copy from the Docker Hub page for Caddy, edited to specify the Caddy version and include the DigitalOcean bundle:</p>
+<h4 id="dockerfile">Dockerfile</h4>
+<pre class="language-dockerfile"><code is:raw="" class="language-dockerfile"><span class="token instruction"><span class="token keyword">FROM</span> caddy:2-builder <span class="token keyword">AS</span> builder</span>
+
+<span class="token instruction"><span class="token keyword">RUN</span> xcaddy build <span class="token operator">\</span>
+    --with github.com/caddy-dns/digitalocean</span>
+
+<span class="token instruction"><span class="token keyword">FROM</span> caddy:2</span>
+ 
+<span class="token instruction"><span class="token keyword">COPY</span> <span class="token options"><span class="token property">--from</span><span class="token punctuation">=</span><span class="token string">builder</span></span> /usr/bin/caddy /usr/bin/caddy</span></code></pre>
+<p>Save this Dockerfile to your Docker host, and simply run <code>docker build -f ./Dockerfile -t "caddyacme" .</code> from the directory.</p>
+<p>This Dockerfile directs to build Caddy with the Digitalocean module and then copies the compiled Caddy binary from the builder image to a standard caddy image.</p>
+<p>Once complete, I had 4 caddy images present:</p>
+<ul>
+<li>Standard Caddy2 image</li>
+<li>Standard Builder image</li>
+<li>The image where the modified Caddy image was compiled (tag-less, large)</li>
+<li>The slimmer Caddy2 image with the modified Caddy binary copied into it (tag-less, slim). :white_check_mark: This is the one we want to use for Caddy proper!</li>
+</ul>
+<p><img src="/images/uploads/caddy/dockerimagels.png" alt="dockerimagels.png"></p>
+<blockquote>
+<p>Once built, you can remove all images other than the slim modified Caddy image.</p>
+</blockquote>
+<h2 id="creating-the-caddy-docker-compose-file-and-dependencies">Creating the Caddy docker-compose file and dependencies</h2>
+<p>With the newly created Caddy image created, we can now setup the docker-compose file and dependencies.</p>
+<p>I followed the instructions from <a href="https://hub.docker.com/_/caddy">Caddy’s documentation</a>. Down to creating the site directory even though I don’t need it (yet!)</p>
+<h3 id="directory-structure">Directory structure</h3>
+<p>Create the needful:</p>
+<pre class="language-bash"><code is:raw="" class="language-bash">$ <span class="token function">mkdir</span> caddy_config
+$ <span class="token function">mkdir</span> caddy_data
+$ <span class="token function">mkdir</span> site
+$ <span class="token function">touch</span> Caddyfile
+$ <span class="token function">touch</span> docker-compose.yml
+$ <span class="token function">docker</span> volume create <span class="token parameter variable">--name</span><span class="token operator">=</span>caddy_data <span class="token comment"># creates the necessary caddy_data volume</span>
+$ <span class="token function">docker</span> network create lab-net-1 <span class="token comment"># creates a Docker network for all to-be-proxied Docker services. This is so that Caddy can address them by name within the Caddyfile.</span></code></pre>
+<p>Outcome</p>
+<p><img src="/images/uploads/caddy/caddytree.png" alt="caddytree.png"></p>
+<p>(ignore the xcaddy directory, that’s where I held the build Dockerfile from the previous step)</p>
+<h3 id="docker-composeyml">docker-compose.yml</h3>
+<pre class="language-yaml"><code is:raw="" class="language-yaml"><span class="token key atrule">version</span><span class="token punctuation">:</span> <span class="token string">"3.7"</span>
+
+<span class="token key atrule">services</span><span class="token punctuation">:</span>
+  <span class="token key atrule">caddy</span><span class="token punctuation">:</span>
+    <span class="token key atrule">container_name</span><span class="token punctuation">:</span> caddy<span class="token punctuation">-</span>prod
+    <span class="token key atrule">environment</span><span class="token punctuation">:</span>
+      <span class="token punctuation">-</span> DO_API_KEY=YOUR<span class="token punctuation">-</span>DIGITALOCEAN<span class="token punctuation">-</span>API<span class="token punctuation">-</span>KEY<span class="token punctuation">-</span>HERE
+    <span class="token key atrule">image</span><span class="token punctuation">:</span> caddyacme
+    <span class="token key atrule">restart</span><span class="token punctuation">:</span> unless<span class="token punctuation">-</span>stopped
+    <span class="token key atrule">ports</span><span class="token punctuation">:</span>
+      <span class="token punctuation">-</span> <span class="token string">"80:80"</span>
+      <span class="token punctuation">-</span> <span class="token string">"443:443"</span>
+    <span class="token key atrule">volumes</span><span class="token punctuation">:</span>
+      <span class="token punctuation">-</span> /home/tomo/docker/caddy/Caddyfile<span class="token punctuation">:</span>/etc/caddy/Caddyfile
+      <span class="token punctuation">-</span> /home/tomo/docker/caddy/site<span class="token punctuation">:</span>/srv
+      <span class="token punctuation">-</span> /home/tomo/docker/caddy/caddy_data<span class="token punctuation">:</span>/data
+      <span class="token punctuation">-</span> /home/tomo/docker/caddy/caddy_config<span class="token punctuation">:</span>/config
+<span class="token key atrule">volumes</span><span class="token punctuation">:</span>
+  <span class="token key atrule">caddy_data</span><span class="token punctuation">:</span>
+    <span class="token key atrule">external</span><span class="token punctuation">:</span> <span class="token boolean important">true</span>
+  <span class="token key atrule">caddy_config</span><span class="token punctuation">:</span>
+<span class="token key atrule">networks</span><span class="token punctuation">:</span>
+    <span class="token key atrule">default</span><span class="token punctuation">:</span>
+        <span class="token key atrule">external</span><span class="token punctuation">:</span> <span class="token boolean important">true</span>
+        <span class="token key atrule">name</span><span class="token punctuation">:</span> lab<span class="token punctuation">-</span>net<span class="token punctuation">-</span><span class="token number">1</span></code></pre>
+<p>To make this fit your environment:</p>
+<ul>
+<li>Use the image ID of the slim tag-less one that was built in the previous step :arrow_up:</li>
+<li>Add your DigitalOcean API key to the environment section</li>
+<li>Ensure the network is the same across your different Docker containers. This is so that Caddy can address them by name within the Caddyfile.</li>
+</ul>
+<blockquote>
+<p>Adding your API key directly to the docker-compose.yml comes with risks. Anyone who can read the docker-compose.yml file can access your DigitalOcean account with the permissions provisioned by the key.</p>
+</blockquote>
+<h3 id="setup-a-test-service-within-the-caddyfile">Setup a test service within the Caddyfile</h3>
+<pre class="language-plaintext"><code is:raw="" class="language-plaintext">caddydemo.lab.example.com {
+        respond "Hello World"
+        tls {
+                dns digitalocean {env.DO_API_KEY}
+        }
+}</code></pre>
+<h2 id="testing">Testing</h2>
+<p>With your docker-compose.yml and Caddyfile modified to your environment, you’re ready to test your Caddy setup!</p>
+<p>Simply run <code>docker-compose up</code> from your project directory so you can stay attached to the logs in realtime. You should see something like tls.obtain and tls.issuance.acme.</p>
+<p><img src="/images/uploads/caddy/docker-composelogs.png" alt="docker-composelogs.png"></p>
+<p>Then, navigate to your test page and revel in the security!:</p>
+<p><img src="/images/uploads/caddy/test-success.png" alt="test-success.png"></p>
+<h2 id="adding-real-services">Adding real services</h2>
+<p>After a successful dry run, you can stop the realtime stream of logs with <kbd>Ctrl</kbd> + <kbd>C</kbd> and start adding real services to your Caddyfile. Since I created a dedicated network and ensured all my <a href="https://docs.docker.com/compose/networking/">containers are on the same network</a>, Caddy can address them by their container name:</p>
+<pre class="language-plaintext"><code is:raw="" class="language-plaintext">portainer.lab.example.com {
+        reverse_proxy portainer:9000
+        tls {
+                dns digitalocean {env.DO_API_KEY}
+        }
+}</code></pre>
+<p>Once you’ve added all your services, you can simply run <code>docker compose up -d</code> and your work here is done.</p>
+<h2 id="reloading-caddy-and-general-administration">Reloading Caddy and general administration</h2>
+<p>When using a DNS wildcard in your local DNS server, the only administration required for onboarding a new service is modifying the Caddyfile and reloading Caddy.</p>
+<p>The official Docker Hub page for Caddy has a useful way to reload caddy without having to stop/start the container:</p>
+<pre class="language-bash"><code is:raw="" class="language-bash"><span class="token assign-left variable">caddy_container_id</span><span class="token operator">=</span><span class="token variable"><span class="token variable">$(</span><span class="token function">docker</span> <span class="token function">ps</span> <span class="token operator">|</span> <span class="token function">grep</span> caddy <span class="token operator">|</span> <span class="token function">awk</span> <span class="token string">'{print $1;}'</span><span class="token variable">)</span></span>
+<span class="token function">docker</span> <span class="token builtin class-name">exec</span> <span class="token parameter variable">-w</span> /etc/caddy <span class="token variable">$caddy_container_id</span> caddy reload</code></pre>
+<p>This process is simpler if you set a container_name like in my docker-compose.yml file above:</p>
+<pre class="language-plaintext"><code is:raw="" class="language-plaintext">docker exec -w /etc/caddy caddy-prod caddy reload</code></pre>
+<p>Coincidentally, this is also the way to do general administration within the container if required. For example, running <code>docker exec -w /etc/caddy caddy-prod caddy fmt --overwrite</code> will reformat your Caddyfile correctly.</p>
+<h2 id="conclusion">Conclusion</h2>
+<p>In this write-up I have hopefully conveyed</p>
+<ul class="contains-task-list">
+<li class="task-list-item"><input type="checkbox" checked disabled> How to setup a wildcard DNS in your pihole/dnsmasq server (and why it’s useful for the homelab)</li>
+<li class="task-list-item"><input type="checkbox" checked disabled> How to build and use a Docker image for Caddy with the bundled modules</li>
+<li class="task-list-item"><input type="checkbox" checked disabled> How to get valid certificates with Caddy and DigitalOcean (or any other provider!), without exposing a single port.</li>
+<li class="task-list-item"><input type="checkbox" checked disabled> How to add to and administer your Caddy</li>
+</ul>
+<p>Don’t forget to like and subscribe and click the bell icon and checkout my Soundcloud</p>
+</article>
+    </div><br class="my-4"><footer class="footer py-6 border-t">
+    <nav class="nav">
+        <div>© kmsec</div>
+        <div>This site is built with a modified <a class="text-indigo-500 dark:text-indigo-400 hover:underline" href="https://github.com/one-aalam/astro-ink">Astro Ink</a> theme on <a class="text-base text-indigo-500 dark:text-indigo-400 hover:underline" href="https://astro.build/">Astro</a></div>
+    </nav>
+</footer><div class="portal-root">
+    <astro-island uid="Z1yY8bw" component-url="/SearchModal.e26317e0.js" component-export="default" renderer-url="/client.788af3ea.js" props="{}" ssr="" client="load" opts="{&quot;name&quot;:&quot;SearchModal&quot;,&quot;value&quot;:true}"></astro-island>
+</div><script type="application/javascript" src="/prism.js"></script>
+        </main>
+    </div>
+</body>
+</html>

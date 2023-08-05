@@ -1,0 +1,15 @@
+---
+import DefaultPageLayout from '$/layouts/default.astro'
+import MediaPreviewList from '$/components/ToolPreviewList.astro'
+import posts from '$/data/tool-list.json'
+
+let title = 'Tools';
+let description = 'A list of tools I regularly use (or made) for investigations'
+
+// const response = await fetch('https://raw.githubusercontent.com/one-aalam/astro-ink/main/src/data/astro-media.json')
+// const allPosts = await response.json()
+const sortedPosts = posts.sort((a, b) => new Date(b.date) - new Date(a.date))
+---
+<DefaultPageLayout content={{ title, description }}>
+         <MediaPreviewList posts={sortedPosts} />
+ </DefaultPageLayout>

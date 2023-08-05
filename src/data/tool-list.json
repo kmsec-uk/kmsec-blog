@@ -1,0 +1,23 @@
+[
+    {
+        "title": "favicon-hash.kmsec.uk",
+        "description": "Grab the favicon hash of a website to use for Shodan, VirusTotal, and Censys hunting. And it has an API!",
+        "url": "https://favicon-hash.kmsec.uk",
+        "credit": "kmsec",
+        "date": "2023-07-30"
+    },
+    {
+        "title": "ip.kmsec.uk",
+        "description": "Returns the IP, headers, and geolocation of your browser request. It also has a CLI-friendly output option.",
+        "url": "https://ip.kmsec.uk",
+        "credit": "kmsec",
+        "date": "2023-07-08"
+    },
+    {
+        "title": "cyberchef.kmsec.uk",
+        "description": "A dark-mode first CyberChef mirror.",
+        "url": "https://cyberchef.kmsec.uk",
+        "credit": "GCHQ",
+        "date": "2023-07-11"
+    }
+]

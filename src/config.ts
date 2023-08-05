@@ -13,10 +13,10 @@ export const NAV_ITEMS: NavItems = {
         path: '/tags',
         title: 'tags'
     },
-    // misc: {
-    //     path: '/misc',
-    //     title: 'misc'
-    // },
+    tools: {
+        path: '/tools',
+        title: 'tools'
+    },
     about: {
         path: '/about',
         title: 'about'

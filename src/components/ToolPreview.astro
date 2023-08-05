@@ -1,7 +1,7 @@
 ---
 import { getMonthName } from '$/utils'
 const { post } = Astro.props
-var joiner = "with"
+
 ---
 <div class="flex gap-6">
     <div class="sm:w-20 md:w-32">
@@ -16,11 +16,7 @@ var joiner = "with"
                 <a href={post.url} title={post.title} target="_blank">{post.title}</a>
             </h4>
             <div>
-            <p class="text-lg leading-6 text-theme-primary dark:text-theme-dark-primary line-clamp-2">{post.host}
-            {
-                post.participants.length > 0 && `${joiner} ${post.participants.join(', ')}`
-            }
-            </p>
+            <p class="text-lg leading-6 text-theme-primary dark:text-theme-dark-primary line-clamp-2">{post.credit}</p>
             </div>
         </div>
         <p class="text-lg leading-6 text-gray-700 dark:text-gray-400 line-clamp-2">
