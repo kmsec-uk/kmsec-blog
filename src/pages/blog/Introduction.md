@@ -23,4 +23,3 @@ Under the hood, it utilises [Tailwind CSS](https://tailwindcss.com/) for general
 [Prism.js](https://prismjs.com/) is used for code-block styling and highlighting.
 
 The header banner was generated with [BGjar](https://bgjar.com/).
-
